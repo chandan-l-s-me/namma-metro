@@ -5,24 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1f2bc2f-94b7-4606-b96b-70f701c52ce4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/controller/TicketController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/Ticket.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/repository/TicketRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/service/TicketService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/MetroApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/MetroApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/controller/TrainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/controller/TrainController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/Train.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/Train.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/CancelledState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/CancelledState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/DelayedState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/DelayedState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/RunningState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/RunningState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/ScheduledState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/ScheduledState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/TrainState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/TrainState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/repository/TrainRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/repository/TrainRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/service/TrainService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/service/TrainService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +113,7 @@
       <updated>1776073341046</updated>
       <workItem from="1776073343075" duration="8000" />
       <workItem from="1776125655949" duration="2525000" />
-      <workItem from="1776128245057" duration="2427000" />
+      <workItem from="1776128245057" duration="2618000" />
     </task>
     <servers />
   </component>
