@@ -4,11 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c1f2bc2f-94b7-4606-b96b-70f701c52ce4" name="Changes" comment="" />
+    <list default="true" id="c1f2bc2f-94b7-4606-b96b-70f701c52ce4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/controller/TicketController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/Ticket.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/repository/TicketRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/service/TicketService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/MetroApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/MetroApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/controller/TrainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/controller/TrainController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/Train.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/Train.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/CancelledState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/CancelledState.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/DelayedState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/DelayedState.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/RunningState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/RunningState.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/ScheduledState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/ScheduledState.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/TrainState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/state/TrainState.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/repository/TrainRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/repository/TrainRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/service/TrainService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/service/TrainService.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -39,14 +65,20 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "Spring Boot.MetroApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "train__module",
+    "git-widget-placeholder": "ticket-module",
+    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/chandanls/Downloads/metro",
@@ -55,10 +87,39 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MetroApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="metro" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.nammametro.metro.MetroApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.nammametro.metro.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.MetroApplication" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="c1f2bc2f-94b7-4606-b96b-70f701c52ce4" name="Changes" comment="" />
@@ -67,6 +128,8 @@
       <option name="presentableId" value="Default" />
       <updated>1776073341046</updated>
       <workItem from="1776073343075" duration="8000" />
+      <workItem from="1776125655949" duration="2525000" />
+      <workItem from="1776128245057" duration="2427000" />
     </task>
     <servers />
   </component>
