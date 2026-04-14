@@ -1,7 +1,9 @@
 package com.nammametro.metro.controller;
 
 import com.nammametro.metro.model.Train;
+import com.nammametro.metro.service.NotificationService;
 import com.nammametro.metro.service.TrainService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,6 +11,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/trains")
 public class TrainController {
+
+    @Autowired
+    private NotificationService notificationService;
 
     private final TrainService trainService;
 
@@ -46,5 +51,23 @@ public class TrainController {
     public String deleteTrain(@PathVariable Long id) {
         trainService.deleteTrain(id);
         return "Train deleted successfully";
+    }
+
+    @PostMapping("/delay")
+    public String delayTrain(@RequestParam String trainName) {
+
+        notificationService.notifyUsers("Train " + trainName + " is delayed!");
+
+        return "Delay notification sent!";
+    }
+
+    @PostMapping("/updateStatus")
+    public String updateStatus(@RequestParam String trainName, @RequestParam String status) {
+
+        notificationService.notifyUsers(
+                "Train " + trainName + " status updated to " + status
+        );
+
+        return "Status updated!";
     }
 }
