@@ -1,8 +1,15 @@
 package com.nammametro.metro.model;
 
-import jakarta.persistence.*;
-import lombok.*;
 import com.nammametro.metro.model.state.TrainState;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -26,5 +33,13 @@ public class Train {
     public void setState(TrainState state) {
         this.state = state;
         state.handle(this);
+    }
+
+    public void setStatus(String status) {
+    this.status = status;
+    }
+
+    public String getStatus() {
+    return status;
     }
 }
