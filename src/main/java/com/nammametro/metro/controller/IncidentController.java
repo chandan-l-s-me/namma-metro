@@ -3,11 +3,7 @@ package com.nammametro.metro.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.nammametro.metro.model.Incident;
 import com.nammametro.metro.service.IncidentService;
@@ -23,7 +19,7 @@ public class IncidentController {
     @Autowired
     private NotificationService notificationService;
 
-    // Report Incident
+    // ✅ Create Incident
     @PostMapping
     public Incident reportIncident(@RequestBody Incident incident) {
 
@@ -37,13 +33,19 @@ public class IncidentController {
         return saved;
     }
 
-    // Get All Incidents
+    // ✅ Get All Incidents
     @GetMapping
     public List<Incident> getAllIncidents() {
         return incidentService.getAllIncidents();
     }
 
-    // Admin Report
+    // ✅ Get Incident by ID (FIXED - THIS WAS MISSING)
+    @GetMapping("/{id}")
+    public Incident getIncidentById(@PathVariable Long id) {
+        return incidentService.getIncidentById(id);
+    }
+
+    // ✅ Admin Report
     @GetMapping("/report")
     public String getReport() {
         return "Total incidents: " + incidentService.getAllIncidents().size();
