@@ -1,6 +1,7 @@
 package com.nammametro.metro.model;
 
 import com.nammametro.metro.model.state.TrainState;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +21,14 @@ public class Train {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonProperty("trainName")
+    private String name;
+
+    @JsonProperty("route")
+    private String route;
+
+    private Integer capacity;
 
     private String source;
 

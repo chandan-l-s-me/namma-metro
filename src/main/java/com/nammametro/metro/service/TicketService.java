@@ -17,7 +17,10 @@ public class TicketService {
 
     // Book Ticket
     public Ticket bookTicket(Ticket ticket) {
-        ticket.setFare(30.0); // temporary fixed fare
+        if (ticket.getFare() == null) {
+            ticket.setFare(30.0); // default fare if not provided
+        }
+        ticket.setStatus("Active"); // set default status
         return ticketRepository.save(ticket);
     }
 

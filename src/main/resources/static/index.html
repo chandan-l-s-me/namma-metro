@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Namma Metro - Ticket Booking System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🚇 Namma Metro</h1>
+            <p>Ticket Booking & Train Management System</p>
+        </header>
+
+        <nav class="nav-menu">
+            <div id="authNav" style="display: flex; width: 100%; flex-wrap: wrap;">
+                <button class="nav-btn active" onclick="showTab('login')">Login</button>
+                <button class="nav-btn" onclick="showTab('register')">Register</button>
+            </div>
+            <div id="mainNav" style="display: none; width: 100%; flex-wrap: wrap;">
+                <button class="nav-btn" onclick="showTab('dashboard')">Home</button>
+                <button class="nav-btn" onclick="showTab('trains')">Trains</button>
+                <button class="nav-btn" onclick="showTab('tickets')">Book Ticket</button>
+                <button class="nav-btn" onclick="showTab('users')">Users</button>
+                <button class="nav-btn" onclick="showTab('incidents')">Report Incident</button>
+                <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Login Section -->
+        <section id="login" class="tab-content active">
+            <div class="section-header">
+                <h2>User Login</h2>
+            </div>
+            
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h3>Sign In to Your Account</h3>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email:</label>
+                            <input type="email" id="loginEmail" placeholder="user@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password:</label>
+                            <input type="password" id="loginPassword" placeholder="Enter password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Sign In</button>
+                    </form>
+                    <p class="auth-link">Don't have an account? <a href="#" onclick="showTab('register')">Register here</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Register Section -->
+        <section id="register" class="tab-content">
+            <div class="section-header">
+                <h2>Create Account</h2>
+            </div>
+            
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h3>Register for Namma Metro</h3>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="regName">Full Name:</label>
+                            <input type="text" id="regName" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regEmail">Email:</label>
+                            <input type="email" id="regEmail" placeholder="user@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword">Password:</label>
+                            <input type="password" id="regPassword" placeholder="Enter password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regConfirmPassword">Confirm Password:</label>
+                            <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Create Account</button>
+                    </form>
+                    <p class="auth-link">Already have an account? <a href="#" onclick="showTab('login')">Sign in here</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="tab-content">
+            <div class="section-header">
+                <h2>Welcome to Namma Metro Dashboard</h2>
+                <p id="userGreeting" style="margin-top: 10px; color: #667eea; font-size: 1.1em;"></p>
+            </div>
+            
+            <div class="dashboard-container">
+                <div class="dashboard-card" onclick="showTab('trains')">
+                    <div class="card-icon">🚆</div>
+                    <h3>Train Management</h3>
+                    <p>Add new trains and manage schedules</p>
+                    <button class="btn-small">Manage Trains</button>
+                </div>
+
+                <div class="dashboard-card" onclick="showTab('tickets')">
+                    <div class="card-icon">🎫</div>
+                    <h3>Book Tickets</h3>
+                    <p>Book tickets for your journey</p>
+                    <button class="btn-small">Book Now</button>
+                </div>
+
+                <div class="dashboard-card" onclick="showTab('users')">
+                    <div class="card-icon">👥</div>
+                    <h3>User Management</h3>
+                    <p>Create and manage user accounts</p>
+                    <button class="btn-small">Manage Users</button>
+                </div>
+
+                <div class="dashboard-card" onclick="showTab('incidents')">
+                    <div class="card-icon">⚠️</div>
+                    <h3>Report Incidents</h3>
+                    <p>Report and track incidents</p>
+                    <button class="btn-small">Report Issue</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trains Section -->
+        <section id="trains" class="tab-content">
+            <div class="section-header">
+                <h2>Train Management</h2>
+            </div>
+            
+            <div class="form-container">
+                <h3>Add New Train</h3>
+                <form id="trainForm">
+                    <div class="form-group">
+                        <label for="trainName">Train Name:</label>
+                        <input type="text" id="trainName" placeholder="e.g., Blue Line Express" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trainRoute">Route:</label>
+                        <input type="text" id="trainRoute" placeholder="e.g., Whitefield - Banashankari" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trainCapacity">Capacity:</label>
+                        <input type="number" id="trainCapacity" placeholder="e.g., 500" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Train</button>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3>All Trains</h3>
+                <div id="trainsList" class="list-content">
+                    <p class="loading">Loading trains...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tickets Section -->
+        <section id="tickets" class="tab-content">
+            <div class="section-header">
+                <h2>Book Ticket</h2>
+            </div>
+            
+            <div class="form-container">
+                <h3>Book a Ticket</h3>
+                <form id="ticketForm">
+                    <div class="form-group">
+                        <label for="passengerName">Passenger Name:</label>
+                        <input type="text" id="passengerName" placeholder="Full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="source">From Station:</label>
+                        <input type="text" id="source" placeholder="e.g., Whitefield" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="destination">To Station:</label>
+                        <input type="text" id="destination" placeholder="e.g., Banashankari" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticketPrice">Price (₹):</label>
+                        <input type="number" id="ticketPrice" placeholder="e.g., 20" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Book Ticket</button>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3>Booked Tickets</h3>
+                <div id="ticketsList" class="list-content">
+                    <p class="loading">Loading tickets...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users" class="tab-content">
+            <div class="section-header">
+                <h2>User Management</h2>
+            </div>
+            
+            <div class="form-container">
+                <h3>Create New User</h3>
+                <form id="userForm">
+                    <div class="form-group">
+                        <label for="userName">Full Name:</label>
+                        <input type="text" id="userName" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email:</label>
+                        <input type="email" id="userEmail" placeholder="user@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Password:</label>
+                        <input type="password" id="userPassword" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Create User</button>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3>All Users</h3>
+                <div id="usersList" class="list-content">
+                    <p class="loading">Loading users...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Incidents Section -->
+        <section id="incidents" class="tab-content">
+            <div class="section-header">
+                <h2>Report Incident</h2>
+            </div>
+            
+            <div class="form-container">
+                <h3>Report an Incident</h3>
+                <form id="incidentForm">
+                    <div class="form-group">
+                        <label for="incidentDesc">Description:</label>
+                        <textarea id="incidentDesc" placeholder="Describe the incident" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="incidentLocation">Location:</label>
+                        <input type="text" id="incidentLocation" placeholder="e.g., Platform 3, Whitefield Station" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="incidentSeverity">Severity:</label>
+                        <select id="incidentSeverity" required>
+                            <option value="">-- Select Severity --</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Report Incident</button>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3>Reported Incidents</h3>
+                <div id="incidentsList" class="list-content">
+                    <p class="loading">Loading incidents...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

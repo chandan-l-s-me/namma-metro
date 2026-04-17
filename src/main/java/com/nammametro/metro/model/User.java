@@ -3,6 +3,7 @@ package com.nammametro.metro.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "APP_USER")
 public class User {
 
     @Id
