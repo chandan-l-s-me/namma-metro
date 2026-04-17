@@ -7,6 +7,9 @@ const state = {
     isAdmin: false,
     routes: [],
     trains: [],
+    incidents: [],
+    userNotifications: [],
+    incidentFilter: "ALL",
     draftStations: [],
     bookingStations: [],
     routeDetails: {
@@ -56,6 +59,7 @@ function setupEventListeners() {
     document.getElementById("adminLoginForm")?.addEventListener("submit", handleAdminLogin);
     document.getElementById("ticketForm")?.addEventListener("submit", handleBookTicket);
     document.getElementById("addBalanceForm")?.addEventListener("submit", handleAddBalance);
+    document.getElementById("reportIncidentForm")?.addEventListener("submit", handleReportIncident);
     document.getElementById("createRouteForm")?.addEventListener("submit", handleCreateRoute);
     document.getElementById("addStationForm")?.addEventListener("submit", handleAddStation);
     document.getElementById("createPricingForm")?.addEventListener("submit", handleCreatePricing);
@@ -70,6 +74,7 @@ function setupEventListeners() {
     document.getElementById("refreshBookingBtn")?.addEventListener("click", () => showSection("bookTicket"));
     document.getElementById("refreshTicketsBtn")?.addEventListener("click", () => showSection("myTickets"));
     document.getElementById("refreshProfileBtn")?.addEventListener("click", () => showSection("profile"));
+    document.getElementById("refreshIncidentsBtn")?.addEventListener("click", () => showSection("incidents"));
     document.getElementById("refreshAdminRoutesBtn")?.addEventListener("click", () => showSection("adminRoutes"));
     document.getElementById("refreshPricingBtn")?.addEventListener("click", () => showSection("adminPricing"));
     document.getElementById("refreshTrainsBtn")?.addEventListener("click", () => showSection("adminTrain"));
@@ -85,6 +90,29 @@ function setupEventListeners() {
 
     document.getElementById("pricingList")?.addEventListener("click", handlePricingActions);
     document.getElementById("draftStationsList")?.addEventListener("click", handleDraftStationActions);
+    document.getElementById("refreshAdminIncidentsBtn")?.addEventListener("click", () => showSection("adminIncidents"));
+    
+    // Incident filter buttons
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+            e.target.classList.add("active");
+            state.incidentFilter = e.target.dataset.filter || "ALL";
+            renderAdminIncidents();
+        });
+    });
+
+    // Notifications
+    document.getElementById("refreshNotificationsBtn")?.addEventListener("click", () => showSection("notifications"));
+    document.getElementById("markAllReadBtn")?.addEventListener("click", handleMarkAllNotificationsRead);
+
+    document.querySelectorAll(".notif-filter-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            document.querySelectorAll(".notif-filter-btn").forEach((b) => b.classList.remove("active"));
+            e.target.classList.add("active");
+            renderNotifications(e.target.dataset.notifFilter || "ALL");
+        });
+    });
 }
 
 function restoreSession() {
@@ -134,12 +162,15 @@ function renderNavigation() {
         items.push({ id: "adminRoutes", label: "Manage Routes" });
         items.push({ id: "adminPricing", label: "Pricing" });
         items.push({ id: "adminTrain", label: "Trains" });
+        items.push({ id: "adminIncidents", label: "Incidents" });
         items.push({ id: "routes", label: "Public Routes" });
     } else {
         items.push({ id: "dashboard", label: "Dashboard" });
         items.push({ id: "routes", label: "Routes" });
         items.push({ id: "bookTicket", label: "Book Ticket" });
         items.push({ id: "myTickets", label: "My Tickets" });
+        items.push({ id: "incidents", label: "Incidents" });
+        items.push({ id: "notifications", label: "Notifications" });
         items.push({ id: "profile", label: "Profile" });
     }
 
@@ -224,6 +255,14 @@ async function showSection(sectionId) {
             ensureRegularSession();
             await loadProfile();
             break;
+        case "incidents":
+            ensureRegularSession();
+            await loadIncidents();
+            break;
+        case "notifications":
+            ensureRegularSession();
+            await loadUserNotifications();
+            break;
         case "adminRoutes":
             ensureAdminSession();
             await loadAdminRoutes();
@@ -235,6 +274,10 @@ async function showSection(sectionId) {
         case "adminTrain":
             ensureAdminSession();
             await loadAdminTrainData();
+            break;
+        case "adminIncidents":
+            ensureAdminSession();
+            await loadAdminIncidents();
             break;
         default:
             break;
@@ -1312,4 +1355,360 @@ function escapeHtml(value) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#39;");
+}
+
+// Incidents Management
+async function loadIncidents() {
+    try {
+        const incidents = await apiRequest("/incidents");
+        state.incidents = Array.isArray(incidents) ? incidents : [];
+        renderIncidents();
+    } catch (error) {
+        state.incidents = [];
+        renderIncidents();
+        showNotification(`Unable to load incidents: ${error.message}`, "error");
+    }
+}
+
+async function handleReportIncident(event) {
+    event.preventDefault();
+
+    try {
+        ensureRegularSession();
+        const payload = {
+            description: document.getElementById("incidentDescription").value.trim(),
+            location: document.getElementById("incidentLocation").value.trim()
+        };
+
+        if (!payload.description) {
+            throw new Error("Please enter an incident description.");
+        }
+        if (!payload.location) {
+            throw new Error("Please enter the incident location.");
+        }
+
+        const newIncident = await apiRequest("/incidents", {
+            method: "POST",
+            body: payload
+        });
+
+        state.incidents.unshift(newIncident);
+        event.target.reset();
+        renderIncidents();
+        showNotification("Incident reported successfully.");
+    } catch (error) {
+        showNotification(error.message, "error");
+    }
+}
+
+function renderIncidents() {
+    const container = document.getElementById("incidentsList");
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    if (!state.incidents || state.incidents.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No incidents reported yet.</p></div>';
+        return;
+    }
+
+    state.incidents.forEach((incident) => {
+        const card = document.createElement("div");
+        card.className = "incident-item";
+        card.innerHTML = `
+            <div class="incident-header">
+                <h4>${escapeHtml(incident.location || "Unknown Location")}</h4>
+                <span class="incident-id">#${incident.id}</span>
+            </div>
+            <p class="incident-description">${escapeHtml(incident.description || "No description provided")}</p>
+            <div class="incident-meta">
+                <span class="incident-date">Reported: ${formatIncidentDate(incident)}</span>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function formatIncidentDate(incident) {
+    if (!incident) {
+        return "--";
+    }
+    const dateStr = incident.createdAt || incident.reportedAt || incident.timestamp || new Date().toISOString();
+    try {
+        return new Date(dateStr).toLocaleDateString("en-IN", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    } catch (error) {
+        return "--";
+    }
+}
+
+// Admin Incidents Management
+async function loadAdminIncidents() {
+    try {
+        const incidents = await apiRequest("/incidents");
+        state.incidents = Array.isArray(incidents) ? incidents : [];
+        renderAdminIncidentsStats();
+        renderAdminIncidents();
+    } catch (error) {
+        state.incidents = [];
+        showNotification(`Unable to load incidents: ${error.message}`, "error");
+    }
+}
+
+function renderAdminIncidentsStats() {
+    const stats = {
+        OPEN: 0,
+        IN_PROGRESS: 0,
+        RESOLVED: 0,
+        CLOSED: 0
+    };
+
+    state.incidents.forEach((incident) => {
+        const status = incident.status || "OPEN";
+        if (stats[status] !== undefined) {
+            stats[status]++;
+        }
+    });
+
+    document.getElementById("totalIncidentsCount").textContent = state.incidents.length;
+    document.getElementById("openIncidentsCount").textContent = stats.OPEN;
+    document.getElementById("progressIncidentsCount").textContent = stats.IN_PROGRESS;
+    document.getElementById("resolvedIncidentsCount").textContent = stats.RESOLVED;
+}
+
+function renderAdminIncidents() {
+    const container = document.getElementById("adminIncidentsList");
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    let filtered = state.incidents;
+    if (state.incidentFilter !== "ALL") {
+        filtered = state.incidents.filter((i) => i.status === state.incidentFilter);
+    }
+
+    if (!filtered || filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No incidents found.</p></div>';
+        return;
+    }
+
+    filtered.forEach((incident) => {
+        const card = document.createElement("div");
+        card.className = `incident-admin-card status-${(incident.status || "OPEN").toLowerCase()}`;
+        card.innerHTML = `
+            <div class="incident-admin-header">
+                <div>
+                    <h4>${escapeHtml(incident.location || "Unknown Location")}</h4>
+                    <span class="incident-status-badge">${incident.status || "OPEN"}</span>
+                </div>
+                <span class="incident-admin-id">#${incident.id}</span>
+            </div>
+            <p class="incident-admin-description">${escapeHtml(incident.description || "No description")}</p>
+            ${incident.resolutionNotes ? `<div class="incident-notes"><strong>Notes:</strong> ${escapeHtml(incident.resolutionNotes)}</div>` : ""}
+            <div class="incident-admin-meta">
+                <span>Reported: ${formatIncidentDate(incident)}</span>
+            </div>
+            <div class="incident-admin-actions">
+                <select class="incident-status-select" data-incident-id="${incident.id}">
+                    <option value="OPEN" ${incident.status === "OPEN" ? "selected" : ""}>Open</option>
+                    <option value="IN_PROGRESS" ${incident.status === "IN_PROGRESS" ? "selected" : ""}>In Progress</option>
+                    <option value="RESOLVED" ${incident.status === "RESOLVED" ? "selected" : ""}>Resolved</option>
+                    <option value="CLOSED" ${incident.status === "CLOSED" ? "selected" : ""}>Closed</option>
+                </select>
+                <input type="text" class="incident-notes-input" data-incident-id="${incident.id}" placeholder="Add resolution notes..." value="${escapeHtml(incident.resolutionNotes || "")}">
+                <button class="btn-secondary" data-action="save-incident" data-incident-id="${incident.id}">Save</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    // Attach event listeners
+    document.querySelectorAll("[data-action='save-incident']").forEach((btn) => {
+        btn.addEventListener("click", handleSaveIncident);
+    });
+}
+
+async function handleSaveIncident(e) {
+    const incidentId = e.target.dataset.incidentId;
+    const statusSelect = document.querySelector(`.incident-status-select[data-incident-id="${incidentId}"]`);
+    const notesInput = document.querySelector(`.incident-notes-input[data-incident-id="${incidentId}"]`);
+
+    if (!statusSelect || !notesInput) {
+        return;
+    }
+
+    try {
+        const payload = {
+            status: statusSelect.value,
+            resolutionNotes: notesInput.value.trim()
+        };
+
+        await apiRequest(`/incidents/${incidentId}`, {
+            method: "PUT",
+            body: payload
+        });
+
+        showNotification("Incident updated successfully.");
+        await loadAdminIncidents();
+    } catch (error) {
+        showNotification(`Failed to update incident: ${error.message}`, "error");
+    }
+}
+
+// Notifications Management
+async function loadUserNotifications() {
+    try {
+        if (!state.session || state.isAdmin) {
+            throw new Error("Login required to view notifications");
+        }
+
+        const notifications = await apiRequest(`/notifications/user/${state.session.id}`);
+        state.userNotifications = Array.isArray(notifications) ? notifications : [];
+        renderNotifications("ALL");
+    } catch (error) {
+        showNotification(`Unable to load notifications: ${error.message}`, "error");
+        state.userNotifications = [];
+    }
+}
+
+function renderNotifications(filterType = "ALL") {
+    const container = document.getElementById("notificationsList");
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    let filtered = state.userNotifications || [];
+    if (filterType !== "ALL") {
+        filtered = filtered.filter((n) => n.type === filterType);
+    }
+
+    if (!filtered || filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No notifications to display.</p></div>';
+        return;
+    }
+
+    filtered.forEach((notification) => {
+        const card = document.createElement("div");
+        card.className = `notification-item ${notification.isRead ? "read" : "unread"} type-${(notification.type || "").toLowerCase()}`;
+        card.innerHTML = `
+            <div class="notification-header">
+                <div class="notification-title-section">
+                    <span class="notification-badge">${getNotificationIcon(notification.type)}</span>
+                    <h4>${escapeHtml(notification.title || "Notification")}</h4>
+                </div>
+                <span class="notification-time">${formatNotificationDate(notification.createdAt)}</span>
+            </div>
+            <p class="notification-message">${escapeHtml(notification.message || "")}</p>
+            <div class="notification-actions">
+                ${!notification.isRead ? `<button class="btn-secondary" data-action="mark-read" data-notif-id="${notification.id}">Mark as Read</button>` : ""}
+                <button class="btn-secondary" data-action="delete-notif" data-notif-id="${notification.id}">Delete</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    // Attach event listeners
+    document.querySelectorAll("[data-action='mark-read']").forEach((btn) => {
+        btn.addEventListener("click", handleMarkNotificationRead);
+    });
+
+    document.querySelectorAll("[data-action='delete-notif']").forEach((btn) => {
+        btn.addEventListener("click", handleDeleteNotification);
+    });
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        "TICKET_BOOKING": "🎫",
+        "TRAIN_DELAY": "⏰",
+        "TRAIN_STATUS_UPDATE": "🚂",
+        "TICKET_CANCELLATION": "❌",
+        "USER_REGISTRATION": "✅",
+        "INCIDENT_REPORT": "⚠️"
+    };
+    return icons[type] || "📢";
+}
+
+function formatNotificationDate(dateStr) {
+    if (!dateStr) {
+        return "Recently";
+    }
+
+    try {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const diff = now - date;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const days = Math.floor(hours / 24);
+
+        if (hours < 1) {
+            return "Just now";
+        } else if (hours < 24) {
+            return `${hours}h ago`;
+        } else if (days < 7) {
+            return `${days}d ago`;
+        } else {
+            return date.toLocaleDateString("en-IN");
+        }
+    } catch (error) {
+        return "Recently";
+    }
+}
+
+async function handleMarkNotificationRead(e) {
+    const notifId = e.target.dataset.notifId;
+
+    try {
+        await apiRequest(`/notifications/${notifId}/read`, {
+            method: "PUT"
+        });
+
+        await loadUserNotifications();
+        showNotification("Notification marked as read.");
+    } catch (error) {
+        showNotification(`Error: ${error.message}`, "error");
+    }
+}
+
+async function handleMarkAllNotificationsRead() {
+    try {
+        if (!state.session || state.isAdmin) {
+            throw new Error("Login required");
+        }
+
+        await apiRequest(`/notifications/user/${state.session.id}/read-all`, {
+            method: "PUT"
+        });
+
+        await loadUserNotifications();
+        showNotification("All notifications marked as read.");
+    } catch (error) {
+        showNotification(`Error: ${error.message}`, "error");
+    }
+}
+
+async function handleDeleteNotification(e) {
+    const notifId = e.target.dataset.notifId;
+
+    try {
+        await apiRequest(`/notifications/${notifId}`, {
+            method: "DELETE"
+        });
+
+        await loadUserNotifications();
+        showNotification("Notification deleted.");
+    } catch (error) {
+        showNotification(`Error: ${error.message}`, "error");
+    }
 }

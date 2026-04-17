@@ -24,17 +24,20 @@ public class TicketService {
     private final TrainRepository trainRepository;
     private final PricingService pricingService;
     private final RegularUserService regularUserService;
+    private final NotificationService notificationService;
 
     public TicketService(TicketRepository ticketRepository,
                         StationRepository stationRepository,
                         TrainRepository trainRepository,
                         PricingService pricingService,
-                        RegularUserService regularUserService) {
+                        RegularUserService regularUserService,
+                        NotificationService notificationService) {
         this.ticketRepository = ticketRepository;
         this.stationRepository = stationRepository;
         this.trainRepository = trainRepository;
         this.pricingService = pricingService;
         this.regularUserService = regularUserService;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -181,16 +184,48 @@ public class TicketService {
      * Notify users about ticket booking
      */
     private void notifyTicketBooked(Ticket ticket) {
-        System.out.println("Notification: Ticket booked for " + ticket.getPassengerName() +
-                " from " + ticket.getSourceStationName() + " to " +
-                ticket.getDestinationStationName() + ". Fare: " + ticket.getFare());
+        try {
+            String message = "Ticket booked for " + ticket.getPassengerName() +
+                    " from " + ticket.getSourceStationName() + " to " +
+                    ticket.getDestinationStationName() + ". Fare: ₹" + ticket.getFare();
+            
+            if (ticket.getRegularUser() != null && ticket.getRegularUser().getUser() != null) {
+                notificationService.createNotification(
+                    "TICKET_BOOKING",
+                    "Ticket Booking Confirmation",
+                    message,
+                    ticket.getRegularUser().getUser().getId(),
+                    String.valueOf(ticket.getId())
+                );
+            }
+            
+            System.out.println("Notification: " + message);
+        } catch (Exception e) {
+            System.out.println("Error creating notification: " + e.getMessage());
+        }
     }
 
     /**
      * Notify users about ticket cancellation
      */
     private void notifyTicketCancelled(Ticket ticket) {
-        System.out.println("Notification: Ticket cancelled for " + ticket.getPassengerName() +
-                ". Refund of " + ticket.getFinalPrice() + " credited to wallet.");
+        try {
+            String message = "Ticket cancelled for " + ticket.getPassengerName() +
+                    ". Refund of ₹" + ticket.getFinalPrice() + " credited to wallet.";
+            
+            if (ticket.getRegularUser() != null && ticket.getRegularUser().getUser() != null) {
+                notificationService.createNotification(
+                    "TICKET_CANCELLATION",
+                    "Ticket Cancellation Confirmation",
+                    message,
+                    ticket.getRegularUser().getUser().getId(),
+                    String.valueOf(ticket.getId())
+                );
+            }
+            
+            System.out.println("Notification: " + message);
+        } catch (Exception e) {
+            System.out.println("Error creating notification: " + e.getMessage());
+        }
     }
 }
