@@ -21,4 +21,9 @@ public class IncidentService {
     public List<Incident> getAllIncidents() {
         return incidentRepository.findAll();
     }
+
+    // ✅ REQUIRED for /incidents/{id}
+    public Incident getIncidentById(Long id) {
+        return incidentRepository.findById(id).orElse(null);
+    }
 }

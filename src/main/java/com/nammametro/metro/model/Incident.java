@@ -15,7 +15,7 @@ public class Incident {
     private String description;
     private String location;
 
-    // Getters and Setters
+    // Getters & Setters
 
     public Long getId() {
         return id;
