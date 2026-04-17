@@ -4,25 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c1f2bc2f-94b7-4606-b96b-70f701c52ce4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/controller/TicketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/controller/TicketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/controller/TrainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/controller/TrainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/Ticket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/Ticket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/Train.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/Train.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/repository/TicketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/repository/TicketRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/repository/TrainRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/repository/TrainRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/service/TicketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/service/TicketService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/service/TrainService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/nammametro/metro/service/TrainService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/controller/TrainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/controller/TrainController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/Train.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/model/Train.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/repository/TrainRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/repository/TrainRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/nammametro/metro/service/TrainService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/nammametro/metro/service/TrainService.class" afterDir="false" />
-    </list>
+    <list default="true" id="c1f2bc2f-94b7-4606-b96b-70f701c52ce4" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,7 +58,7 @@
     "Spring Boot.MetroApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "ui",
+    "git-widget-placeholder": "ui2",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",

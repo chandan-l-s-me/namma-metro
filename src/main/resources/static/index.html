@@ -24,60 +24,9 @@
         <div id="notification" class="notification" role="status" aria-live="polite"></div>
 
         <section id="auth" class="tab-content active">
-            <div class="auth-hero">
-                <div class="auth-hero-copy">
-                    <span class="auth-kicker">Bengaluru Metro Operations Portal</span>
-                    <h2>Move from route planning to ticket booking without leaving the platform.</h2>
-                    <p>
-                        Explore lines, register passengers, manage wallets, and switch into admin control
-                        for routes, pricing, and train operations from one coordinated dashboard.
-                    </p>
-
-                    <div class="auth-hero-metrics">
-                        <div class="hero-metric">
-                            <strong>Routes</strong>
-                            <span>Public browsing with station-level distance flow</span>
-                        </div>
-                        <div class="hero-metric">
-                            <strong>Wallet</strong>
-                            <span>Fare checks, ticket booking, and loyalty tracking</span>
-                        </div>
-                        <div class="hero-metric">
-                            <strong>Admin</strong>
-                            <span>Route creation, pricing control, and train operations</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="auth-hero-panel">
-                    <div class="hero-panel-card">
-                        <span class="hero-panel-label">Fast Start</span>
-                        <h3>Three steps to begin</h3>
-                        <div class="hero-step-list">
-                            <div class="hero-step">
-                                <span class="hero-step-number">01</span>
-                                <div>
-                                    <strong>Create a passenger account</strong>
-                                    <p>Register with the live passenger API and keep wallet activity tied to that profile.</p>
-                                </div>
-                            </div>
-                            <div class="hero-step">
-                                <span class="hero-step-number">02</span>
-                                <div>
-                                    <strong>Inspect routes and trains</strong>
-                                    <p>Review route structure, station ordering, and available train schedules before booking.</p>
-                                </div>
-                            </div>
-                            <div class="hero-step">
-                                <span class="hero-step-number">03</span>
-                                <div>
-                                    <strong>Book and manage tickets</strong>
-                                    <p>Use live fare calculation, wallet checks, and ticket history from the same interface.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="auth-header">
+                <h2>Welcome to Namma Metro</h2>
+                <p>Sign in or create an account to get started</p>
             </div>
 
             <div class="auth-entry-grid">
@@ -323,6 +272,38 @@
             </div>
         </section>
 
+        <section id="incidents" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Incidents</h2>
+                    <p>Report operational issues and view recent incident reports.</p>
+                </div>
+                <button id="refreshIncidentsBtn" class="btn-secondary" type="button">Refresh Incidents</button>
+            </div>
+
+            <div class="incidents-container">
+                <div class="incident-card">
+                    <h3>Report an Incident</h3>
+                    <form id="reportIncidentForm">
+                        <div class="form-group">
+                            <label for="incidentLocation">Location</label>
+                            <input type="text" id="incidentLocation" placeholder="Enter station or location name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="incidentDescription">Description</label>
+                            <textarea id="incidentDescription" placeholder="Describe the incident in detail" rows="4" required></textarea>
+                        </div>
+                        <button class="btn-primary" type="submit">Report Incident</button>
+                    </form>
+                </div>
+
+                <div class="incident-card">
+                    <h3>Incident Reports</h3>
+                    <div id="incidentsList" class="incidents-list"></div>
+                </div>
+            </div>
+        </section>
+
         <section id="adminRoutes" class="tab-content">
             <div class="section-header">
                 <div>
@@ -497,6 +478,73 @@
                     <h3 style="margin-top: 24px;">All Trains</h3>
                     <div id="trainAdminList" class="pricing-list"></div>
                 </div>
+            </div>
+        </section>
+
+        <section id="adminIncidents" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Incident Management</h2>
+                    <p>Review, manage, and resolve all passenger-reported incidents.</p>
+                </div>
+                <button id="refreshAdminIncidentsBtn" class="btn-secondary" type="button">Refresh Incidents</button>
+            </div>
+
+            <div class="incidents-admin-container">
+                <div class="incidents-stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Incidents</span>
+                        <span class="stat-value" id="totalIncidentsCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Open</span>
+                        <span class="stat-value open" id="openIncidentsCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">In Progress</span>
+                        <span class="stat-value progress" id="progressIncidentsCount">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Resolved</span>
+                        <span class="stat-value resolved" id="resolvedIncidentsCount">0</span>
+                    </div>
+                </div>
+
+                <div class="incidents-filter">
+                    <button class="filter-btn active" data-filter="ALL">All</button>
+                    <button class="filter-btn" data-filter="OPEN">Open</button>
+                    <button class="filter-btn" data-filter="IN_PROGRESS">In Progress</button>
+                    <button class="filter-btn" data-filter="RESOLVED">Resolved</button>
+                    <button class="filter-btn" data-filter="CLOSED">Closed</button>
+                </div>
+
+                <div id="adminIncidentsList" class="admin-incidents-list"></div>
+            </div>
+        </section>
+
+        <section id="notifications" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Notifications</h2>
+                    <p>Your notifications and updates from Namma Metro.</p>
+                </div>
+                <div class="notification-actions">
+                    <button id="refreshNotificationsBtn" class="btn-secondary" type="button">Refresh</button>
+                    <button id="markAllReadBtn" class="btn-secondary" type="button">Mark All as Read</button>
+                </div>
+            </div>
+
+            <div class="notifications-container">
+                <div class="notifications-filter">
+                    <button class="notif-filter-btn active" data-notif-filter="ALL">All</button>
+                    <button class="notif-filter-btn" data-notif-filter="TICKET_BOOKING">Ticket Booking</button>
+                    <button class="notif-filter-btn" data-notif-filter="TRAIN_DELAY">Train Delay</button>
+                    <button class="notif-filter-btn" data-notif-filter="TRAIN_STATUS_UPDATE">Status Update</button>
+                    <button class="notif-filter-btn" data-notif-filter="TICKET_CANCELLATION">Cancellation</button>
+                    <button class="notif-filter-btn" data-notif-filter="USER_REGISTRATION">Registration</button>
+                </div>
+
+                <div id="notificationsList" class="notifications-list"></div>
             </div>
         </section>
     </div>

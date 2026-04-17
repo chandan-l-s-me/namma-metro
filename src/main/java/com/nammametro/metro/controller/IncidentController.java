@@ -39,10 +39,22 @@ public class IncidentController {
         return incidentService.getAllIncidents();
     }
 
-    // ✅ Get Incident by ID (FIXED - THIS WAS MISSING)
+    // ✅ Get Incident by ID
     @GetMapping("/{id}")
     public Incident getIncidentById(@PathVariable Long id) {
         return incidentService.getIncidentById(id);
+    }
+
+    // ✅ Update Incident Status
+    @PutMapping("/{id}/status")
+    public Incident updateIncidentStatus(@PathVariable Long id, @RequestParam String status) {
+        return incidentService.updateIncidentStatus(id, status);
+    }
+
+    // ✅ Update Incident with Notes
+    @PutMapping("/{id}")
+    public Incident updateIncident(@PathVariable Long id, @RequestBody Incident updatedIncident) {
+        return incidentService.updateIncident(id, updatedIncident);
     }
 
     // ✅ Admin Report
