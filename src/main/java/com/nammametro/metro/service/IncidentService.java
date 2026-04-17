@@ -15,13 +15,22 @@ public class IncidentService {
     private IncidentRepository incidentRepository;
 
     public Incident addIncident(Incident incident) {
-        return incidentRepository.save(incident);
+
+        //  Use Factory instead of direct object save
+        Incident newIncident = IncidentFactory.createIncident(
+                "DEFAULT",   // you can later pass type from request
+                incident.getDescription(),
+                incident.getLocation()
+        );
+
+        return incidentRepository.save(newIncident);
     }
 
     public List<Incident> getAllIncidents() {
         return incidentRepository.findAll();
     }
 
+    // REQUIRED for /incidents/{id}
     public Incident getIncidentById(Long id) {
         return incidentRepository.findById(id).orElse(null);
     }
