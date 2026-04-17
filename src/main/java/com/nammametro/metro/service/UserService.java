@@ -58,18 +58,23 @@ public class UserService {
     // -------------------------------
 
     public User register(User user) {
+        // Check if email already exists
+        User existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser != null) {
+            throw new RuntimeException("Email already registered");
+        }
         User savedUser = userRepository.save(user);
         notificationService.notifyUsers("New user registered: " + user.getName());
         return savedUser;
     }
 
-    public String login(String email, String password) {
+    public User login(String email, String password) {
         User user = userRepository.findByEmail(email);
 
         if (user != null && user.getPassword().equals(password)) {
-            return "Login Successful";
+            return user;
         } else {
-            return "Invalid Credentials";
+            throw new RuntimeException("Invalid email or password");
         }
     }
 }
