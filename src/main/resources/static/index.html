@@ -3,271 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Namma Metro - Ticket Booking System</title>
+    <title>Namma Metro Control Center</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>🚇 Namma Metro</h1>
-            <p>Ticket Booking & Train Management System</p>
+            <div class="header-content">
+                <h1>Namma Metro</h1>
+                <p>Ticket booking, route exploration, wallet management, and admin operations in one place.</p>
+            </div>
+            <div id="userStatus" class="user-status" style="display: none;">
+                <span id="statusIdentity">Guest Session</span>
+                <span id="walletDisplay">Wallet: --</span>
+            </div>
         </header>
 
-        <nav class="nav-menu">
-            <div id="authNav" style="display: flex; width: 100%; flex-wrap: wrap;">
-                <button class="nav-btn active" onclick="showTab('login')">Login</button>
-                <button class="nav-btn" onclick="showTab('register')">Register</button>
-            </div>
-            <div id="mainNav" style="display: none; width: 100%; flex-wrap: wrap;">
-                <button class="nav-btn" onclick="showTab('dashboard')">Home</button>
-                <button class="nav-btn" onclick="showTab('trains')">Trains</button>
-                <button class="nav-btn" onclick="showTab('tickets')">Book Ticket</button>
-                <button class="nav-btn" onclick="showTab('users')">Users</button>
-                <button class="nav-btn" onclick="showTab('incidents')">Report Incident</button>
-                <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
-            </div>
-        </nav>
+        <nav id="navMenu" class="nav-menu" aria-label="Main navigation"></nav>
 
-        <!-- Login Section -->
-        <section id="login" class="tab-content active">
-            <div class="section-header">
-                <h2>User Login</h2>
+        <div id="notification" class="notification" role="status" aria-live="polite"></div>
+
+        <section id="auth" class="tab-content active">
+            <div class="auth-hero">
+                <div class="auth-hero-copy">
+                    <span class="auth-kicker">Bengaluru Metro Operations Portal</span>
+                    <h2>Move from route planning to ticket booking without leaving the platform.</h2>
+                    <p>
+                        Explore lines, register passengers, manage wallets, and switch into admin control
+                        for routes, pricing, and train operations from one coordinated dashboard.
+                    </p>
+
+                    <div class="auth-hero-metrics">
+                        <div class="hero-metric">
+                            <strong>Routes</strong>
+                            <span>Public browsing with station-level distance flow</span>
+                        </div>
+                        <div class="hero-metric">
+                            <strong>Wallet</strong>
+                            <span>Fare checks, ticket booking, and loyalty tracking</span>
+                        </div>
+                        <div class="hero-metric">
+                            <strong>Admin</strong>
+                            <span>Route creation, pricing control, and train operations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-hero-panel">
+                    <div class="hero-panel-card">
+                        <span class="hero-panel-label">Fast Start</span>
+                        <h3>Three steps to begin</h3>
+                        <div class="hero-step-list">
+                            <div class="hero-step">
+                                <span class="hero-step-number">01</span>
+                                <div>
+                                    <strong>Create a passenger account</strong>
+                                    <p>Register with the live passenger API and keep wallet activity tied to that profile.</p>
+                                </div>
+                            </div>
+                            <div class="hero-step">
+                                <span class="hero-step-number">02</span>
+                                <div>
+                                    <strong>Inspect routes and trains</strong>
+                                    <p>Review route structure, station ordering, and available train schedules before booking.</p>
+                                </div>
+                            </div>
+                            <div class="hero-step">
+                                <span class="hero-step-number">03</span>
+                                <div>
+                                    <strong>Book and manage tickets</strong>
+                                    <p>Use live fare calculation, wallet checks, and ticket history from the same interface.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="auth-container">
-                <div class="auth-card">
-                    <h3>Sign In to Your Account</h3>
+
+            <div class="auth-entry-grid">
+                <div class="auth-card auth-card-login">
+                    <div class="auth-card-badge">Passenger Access</div>
+                    <h3>Passenger Login</h3>
+                    <p class="auth-card-intro">Sign in to continue booking tickets, reviewing routes, and checking wallet activity.</p>
                     <form id="loginForm">
                         <div class="form-group">
-                            <label for="loginEmail">Email:</label>
+                            <label for="loginEmail">Email</label>
                             <input type="email" id="loginEmail" placeholder="user@example.com" required>
                         </div>
                         <div class="form-group">
-                            <label for="loginPassword">Password:</label>
+                            <label for="loginPassword">Password</label>
                             <input type="password" id="loginPassword" placeholder="Enter password" required>
                         </div>
-                        <button type="submit" class="btn-primary">Sign In</button>
+                        <button type="submit" class="btn-primary">Login</button>
                     </form>
-                    <p class="auth-link">Don't have an account? <a href="#" onclick="showTab('register')">Register here</a></p>
+                    <p class="auth-link">Login uses `/users/login`, then resolves the passenger profile needed for booking.</p>
                 </div>
-            </div>
-        </section>
 
-        <!-- Register Section -->
-        <section id="register" class="tab-content">
-            <div class="section-header">
-                <h2>Create Account</h2>
-            </div>
-            
-            <div class="auth-container">
-                <div class="auth-card">
-                    <h3>Register for Namma Metro</h3>
+                <div class="auth-card auth-card-register">
+                    <div class="auth-card-badge">New Passenger</div>
+                    <h3>Create Passenger Account</h3>
+                    <p class="auth-card-intro">Register once and use the account for wallet top-ups, fare checks, and ticket history.</p>
                     <form id="registerForm">
                         <div class="form-group">
-                            <label for="regName">Full Name:</label>
-                            <input type="text" id="regName" placeholder="Enter full name" required>
+                            <label for="regName">Full Name</label>
+                            <input type="text" id="regName" placeholder="Amit Kumar" required>
                         </div>
                         <div class="form-group">
-                            <label for="regEmail">Email:</label>
-                            <input type="email" id="regEmail" placeholder="user@example.com" required>
+                            <label for="regEmail">Email</label>
+                            <input type="email" id="regEmail" placeholder="amit@example.com" required>
                         </div>
                         <div class="form-group">
-                            <label for="regPassword">Password:</label>
-                            <input type="password" id="regPassword" placeholder="Enter password" required>
+                            <label for="regPhone">Phone Number</label>
+                            <input type="tel" id="regPhone" placeholder="9876543210" required>
                         </div>
                         <div class="form-group">
-                            <label for="regConfirmPassword">Confirm Password:</label>
-                            <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
+                            <label for="regPassword">Password</label>
+                            <input type="password" id="regPassword" placeholder="Create password" required>
                         </div>
                         <button type="submit" class="btn-primary">Create Account</button>
                     </form>
-                    <p class="auth-link">Already have an account? <a href="#" onclick="showTab('login')">Sign in here</a></p>
+                </div>
+
+                <div class="auth-card auth-card-admin">
+                    <div class="auth-card-badge">Operations Console</div>
+                    <h3>Admin Demo Login</h3>
+                    <p class="auth-card-intro">Use the demo admin session to manage routes, stations, pricing, and train setup.</p>
+                    <form id="adminLoginForm">
+                        <div class="form-group">
+                            <label for="adminUsername">Username or Email</label>
+                            <input type="text" id="adminUsername" placeholder="admin or admin@nammametro.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Password</label>
+                            <input type="password" id="adminPassword" placeholder="admin123" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Login as Admin</button>
+                    </form>
+                    <p class="auth-link">Demo credentials: `admin` or `admin@nammametro.com` with password `admin123`.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Dashboard Section -->
         <section id="dashboard" class="tab-content">
             <div class="section-header">
-                <h2>Welcome to Namma Metro Dashboard</h2>
-                <p id="userGreeting" style="margin-top: 10px; color: #667eea; font-size: 1.1em;"></p>
-            </div>
-            
-            <div class="dashboard-container">
-                <div class="dashboard-card" onclick="showTab('trains')">
-                    <div class="card-icon">🚆</div>
-                    <h3>Train Management</h3>
-                    <p>Add new trains and manage schedules</p>
-                    <button class="btn-small">Manage Trains</button>
+                <div>
+                    <h2>Dashboard</h2>
+                    <p id="userGreeting">Metro operations at a glance.</p>
                 </div>
+            </div>
 
-                <div class="dashboard-card" onclick="showTab('tickets')">
+            <div class="dashboard-grid">
+                <button class="dashboard-card" type="button" data-target="routes">
+                    <div class="card-icon">🗺️</div>
+                    <h3>Routes</h3>
+                    <p>Inspect lines, station order, and route structure.</p>
+                </button>
+                <button class="dashboard-card" type="button" data-target="bookTicket">
                     <div class="card-icon">🎫</div>
-                    <h3>Book Tickets</h3>
-                    <p>Book tickets for your journey</p>
-                    <button class="btn-small">Book Now</button>
-                </div>
-
-                <div class="dashboard-card" onclick="showTab('users')">
-                    <div class="card-icon">👥</div>
-                    <h3>User Management</h3>
-                    <p>Create and manage user accounts</p>
-                    <button class="btn-small">Manage Users</button>
-                </div>
-
-                <div class="dashboard-card" onclick="showTab('incidents')">
-                    <div class="card-icon">⚠️</div>
-                    <h3>Report Incidents</h3>
-                    <p>Report and track incidents</p>
-                    <button class="btn-small">Report Issue</button>
-                </div>
+                    <h3>Book Ticket</h3>
+                    <p>Choose a train, stations, and travel date, then compute fare live.</p>
+                </button>
+                <button class="dashboard-card" type="button" data-target="myTickets">
+                    <div class="card-icon">📋</div>
+                    <h3>My Tickets</h3>
+                    <p>Review active, used, or cancelled bookings from the backend.</p>
+                </button>
+                <button class="dashboard-card" type="button" data-target="profile">
+                    <div class="card-icon">👤</div>
+                    <h3>Profile & Wallet</h3>
+                    <p>Refresh wallet balance, view loyalty points, and add funds.</p>
+                </button>
             </div>
         </section>
 
-        <!-- Trains Section -->
-        <section id="trains" class="tab-content">
+        <section id="routes" class="tab-content">
             <div class="section-header">
-                <h2>Train Management</h2>
-            </div>
-            
-            <div class="form-container">
-                <h3>Add New Train</h3>
-                <form id="trainForm">
-                    <div class="form-group">
-                        <label for="trainName">Train Name:</label>
-                        <input type="text" id="trainName" placeholder="e.g., Blue Line Express" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="trainRoute">Route:</label>
-                        <input type="text" id="trainRoute" placeholder="e.g., Whitefield - Banashankari" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="trainCapacity">Capacity:</label>
-                        <input type="number" id="trainCapacity" placeholder="e.g., 500" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Add Train</button>
-                </form>
+                <div>
+                    <h2>Routes</h2>
+                    <p>Routes are loaded from the backend. Station details are fetched route-by-route.</p>
+                </div>
+                <button id="refreshRoutesBtn" class="btn-secondary" type="button">Refresh Routes</button>
             </div>
 
-            <div class="list-container">
-                <h3>All Trains</h3>
-                <div id="trainsList" class="list-content">
-                    <p class="loading">Loading trains...</p>
-                </div>
-            </div>
+            <div id="routesList" class="routes-container"></div>
         </section>
 
-        <!-- Tickets Section -->
-        <section id="tickets" class="tab-content">
+        <section id="routeDetails" class="tab-content">
             <div class="section-header">
-                <h2>Book Ticket</h2>
-            </div>
-            
-            <div class="form-container">
-                <h3>Book a Ticket</h3>
-                <form id="ticketForm">
-                    <div class="form-group">
-                        <label for="passengerName">Passenger Name:</label>
-                        <input type="text" id="passengerName" placeholder="Full name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="source">From Station:</label>
-                        <input type="text" id="source" placeholder="e.g., Whitefield" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="destination">To Station:</label>
-                        <input type="text" id="destination" placeholder="e.g., Banashankari" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ticketPrice">Price (₹):</label>
-                        <input type="number" id="ticketPrice" placeholder="e.g., 20" step="0.01" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Book Ticket</button>
-                </form>
+                <div>
+                    <h2 id="routeTitle">Route Details</h2>
+                    <p id="routeSubtitle">Stations and distance progression for the selected route.</p>
+                </div>
+                <button class="btn-secondary" type="button" data-target="routes">Back to Routes</button>
             </div>
 
-            <div class="list-container">
-                <h3>Booked Tickets</h3>
-                <div id="ticketsList" class="list-content">
-                    <p class="loading">Loading tickets...</p>
-                </div>
-            </div>
+            <div id="stationsList" class="stations-list"></div>
         </section>
 
-        <!-- Users Section -->
-        <section id="users" class="tab-content">
+        <section id="bookTicket" class="tab-content">
             <div class="section-header">
-                <h2>User Management</h2>
-            </div>
-            
-            <div class="form-container">
-                <h3>Create New User</h3>
-                <form id="userForm">
-                    <div class="form-group">
-                        <label for="userName">Full Name:</label>
-                        <input type="text" id="userName" placeholder="Enter full name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="userEmail">Email:</label>
-                        <input type="email" id="userEmail" placeholder="user@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="userPassword">Password:</label>
-                        <input type="password" id="userPassword" placeholder="Enter password" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Create User</button>
-                </form>
-            </div>
-
-            <div class="list-container">
-                <h3>All Users</h3>
-                <div id="usersList" class="list-content">
-                    <p class="loading">Loading users...</p>
+                <div>
+                    <h2>Book Ticket</h2>
+                    <p>Select a train first. Station choices are populated from that train's route.</p>
                 </div>
+                <button id="refreshBookingBtn" class="btn-secondary" type="button">Refresh Booking Data</button>
             </div>
-        </section>
 
-        <!-- Incidents Section -->
-        <section id="incidents" class="tab-content">
-            <div class="section-header">
-                <h2>Report Incident</h2>
-            </div>
-            
-            <div class="form-container">
-                <h3>Report an Incident</h3>
-                <form id="incidentForm">
+            <div class="booking-container">
+                <form id="ticketForm" class="booking-form">
                     <div class="form-group">
-                        <label for="incidentDesc">Description:</label>
-                        <textarea id="incidentDesc" placeholder="Describe the incident" rows="4" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="incidentLocation">Location:</label>
-                        <input type="text" id="incidentLocation" placeholder="e.g., Platform 3, Whitefield Station" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="incidentSeverity">Severity:</label>
-                        <select id="incidentSeverity" required>
-                            <option value="">-- Select Severity --</option>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
+                        <label for="trainSelect">Train</label>
+                        <select id="trainSelect" required>
+                            <option value="">Select a train</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn-primary">Report Incident</button>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fromStation">From Station</label>
+                            <select id="fromStation" required>
+                                <option value="">Select source station</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="toStation">To Station</label>
+                            <select id="toStation" required>
+                                <option value="">Select destination station</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="passengerName">Passenger Name</label>
+                            <input type="text" id="passengerName" placeholder="Passenger name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="travelDate">Travel Date</label>
+                            <input type="date" id="travelDate" required>
+                        </div>
+                    </div>
+
+                    <div class="fare-info">
+                        <div class="fare-detail">
+                            <span>Distance</span>
+                            <span id="distanceDisplay">--</span>
+                        </div>
+                        <div class="fare-detail">
+                            <span>Calculated Fare</span>
+                            <span id="fareDisplay">--</span>
+                        </div>
+                        <div class="fare-detail highlight">
+                            <span>Final Price</span>
+                            <span id="finalFareDisplay">--</span>
+                        </div>
+                    </div>
+
+                    <div class="balance-check">
+                        <span>Wallet Balance: <strong id="walletCheckDisplay">--</strong></span>
+                        <span id="affordabilityCheck">Choose stations to calculate affordability</span>
+                    </div>
+
+                    <button class="btn-primary" type="submit" style="width: 100%; margin-top: 20px;">Book Ticket</button>
                 </form>
             </div>
+        </section>
 
-            <div class="list-container">
-                <h3>Reported Incidents</h3>
-                <div id="incidentsList" class="list-content">
-                    <p class="loading">Loading incidents...</p>
+        <section id="myTickets" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>My Tickets</h2>
+                    <p>Tickets are pulled from `/api/tickets/user/{regularUserId}`.</p>
+                </div>
+                <button id="refreshTicketsBtn" class="btn-secondary" type="button">Refresh Tickets</button>
+            </div>
+
+            <div id="ticketsList" class="tickets-container"></div>
+        </section>
+
+        <section id="profile" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Profile & Wallet</h2>
+                    <p>Passenger details and live wallet and loyalty information.</p>
+                </div>
+                <button id="refreshProfileBtn" class="btn-secondary" type="button">Refresh Profile</button>
+            </div>
+
+            <div class="profile-container">
+                <div class="profile-card">
+                    <h3>Account Information</h3>
+                    <div id="profileInfo" class="profile-info"></div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>Wallet</h3>
+                    <div class="wallet-section">
+                        <div class="wallet-balance">
+                            <h4>Current Balance</h4>
+                            <div id="balanceDisplay" class="balance-amount">₹0.00</div>
+                        </div>
+                        <form id="addBalanceForm">
+                            <input type="number" id="addAmount" min="1" step="1" placeholder="Amount to add" required>
+                            <button class="btn-primary" type="submit">Add Funds</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>Loyalty</h3>
+                    <div class="loyalty-section">
+                        <div class="loyalty-points">
+                            <h4>Available Points</h4>
+                            <div id="pointsDisplay" class="points-amount">0</div>
+                            <div class="points-info">Points increase as fares are deducted from the wallet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="adminRoutes" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Admin Routes</h2>
+                    <p>Create routes and add stations using the backend route endpoints.</p>
+                </div>
+                <button id="refreshAdminRoutesBtn" class="btn-secondary" type="button">Refresh Admin Data</button>
+            </div>
+
+            <div class="admin-container">
+                <div class="admin-card">
+                    <h3>Create Route</h3>
+                    <form id="createRouteForm">
+                        <div class="form-group">
+                            <label for="routeName">Route Name</label>
+                            <input type="text" id="routeName" placeholder="Purple Line" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="routeDesc">Description</label>
+                            <input type="text" id="routeDesc" placeholder="East-West Corridor" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Stations For This Route</label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" id="draftStationName" placeholder="Majestic">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="draftStationCode" placeholder="MG" maxlength="8">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="number" id="draftStationOrder" min="1" placeholder="Order">
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" id="draftDistanceToNext" min="0" step="0.1" placeholder="Distance to next (km)">
+                                </div>
+                            </div>
+                            <button id="addDraftStationBtn" class="btn-secondary" type="button">Add Station To Route Draft</button>
+                        </div>
+                        <div id="draftStationsList" class="pricing-list"></div>
+                        <button class="btn-primary" type="submit">Create Route</button>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Add Station to Existing Route</h3>
+                    <form id="addStationForm">
+                        <div class="form-group">
+                            <label for="routeSelect">Route</label>
+                            <select id="routeSelect" required>
+                                <option value="">Select a route</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="stationName">Station Name</label>
+                            <input type="text" id="stationName" placeholder="Majestic" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="stationCode">Station Code</label>
+                                <input type="text" id="stationCode" placeholder="MG" maxlength="8" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="stationOrder">Order</label>
+                                <input type="number" id="stationOrder" min="1" placeholder="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="distanceToNext">Distance To Next (km)</label>
+                                <input type="number" id="distanceToNext" min="0" step="0.1" placeholder="2.5" required>
+                            </div>
+                        </div>
+                        <button class="btn-primary" type="submit">Add Station</button>
+                    </form>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <div class="section-header">
+                    <div>
+                        <h2>Current Routes</h2>
+                        <p>Quick route summary for admin verification.</p>
+                    </div>
+                </div>
+                <div id="adminRoutesList" class="routes-container"></div>
+            </div>
+        </section>
+
+        <section id="adminPricing" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Admin Pricing</h2>
+                    <p>Manage distance-based pricing configurations and activate one as current.</p>
+                </div>
+                <button id="refreshPricingBtn" class="btn-secondary" type="button">Refresh Pricing</button>
+            </div>
+
+            <div class="admin-container">
+                <div class="admin-card">
+                    <h3>Create Distance Pricing</h3>
+                    <form id="createPricingForm">
+                        <div class="form-group">
+                            <label for="pricingName">Configuration Name</label>
+                            <input type="text" id="pricingName" placeholder="Standard Pricing" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="baseRate">Base Rate Per Km</label>
+                                <input type="number" id="baseRate" min="0" step="0.5" placeholder="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="minFare">Minimum Fare</label>
+                                <input type="number" id="minFare" min="0" step="1" placeholder="10" required>
+                            </div>
+                        </div>
+                        <button class="btn-primary" type="submit">Create Pricing</button>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Pricing Configurations</h3>
+                    <div id="pricingList" class="pricing-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="adminTrain" class="tab-content">
+            <div class="section-header">
+                <div>
+                    <h2>Admin Trains</h2>
+                    <p>Create trains and review the current train list.</p>
+                </div>
+                <button id="refreshTrainsBtn" class="btn-secondary" type="button">Refresh Trains</button>
+            </div>
+
+            <div class="admin-container">
+                <div class="admin-card">
+                    <h3>Create Train</h3>
+                    <form id="createTrainForm">
+                        <div class="form-group">
+                            <label for="trainName">Train Name</label>
+                            <input type="text" id="trainName" placeholder="Metro Express 01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="trainRouteSelect">Route</label>
+                            <select id="trainRouteSelect" required>
+                                <option value="">Select a route</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="trainCapacity">Capacity</label>
+                                <input type="number" id="trainCapacity" min="1" placeholder="600" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="departureTime">Departure Time</label>
+                                <input type="time" id="departureTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="arrivalTime">Arrival Time</label>
+                                <input type="time" id="arrivalTime" required>
+                            </div>
+                        </div>
+                        <button class="btn-primary" type="submit">Create Train</button>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h3>Current Train</h3>
+                    <div id="currentTrainSummary" class="pricing-list"></div>
+                    <h3 style="margin-top: 24px;">All Trains</h3>
+                    <div id="trainAdminList" class="pricing-list"></div>
                 </div>
             </div>
         </section>
     </div>
 
-    <div class="notification" id="notification"></div>
-
-    <script src="script.js"></script>
+    <script src="script.js?v=7"></script>
 </body>
 </html>
