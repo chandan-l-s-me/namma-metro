@@ -6,6 +6,7 @@ import com.nammametro.metro.model.Route;
 import org.springframework.stereotype.Service;
 import com.nammametro.metro.model.state.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.nammametro.metro.notification.TrainStatusNotificationHandler;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,9 @@ public class TrainService {
     
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private TrainStatusNotificationHandler trainStatusNotificationHandler;
 
     public TrainService(TrainRepository trainRepository, RouteRepository routeRepository) {
         this.trainRepository = trainRepository;
@@ -78,6 +82,7 @@ public class TrainService {
 
     /**
      * Update train status using State pattern
+     * Uses TrainStatusNotificationHandler to notify users with OOP patterns
      */
     public Train updateTrainStatus(Long id, String status) {
         Train train = trainRepository.findById(id)
@@ -91,7 +96,10 @@ public class TrainService {
                 break;
             case "Delayed":
                 train.setState(new DelayedState());
-                notifyTrainDelay(train);
+                // Use handler for delay notifications
+                if (trainStatusNotificationHandler != null) {
+                    trainStatusNotificationHandler.handleTrainDelay(train);
+                }
                 break;
             case "Cancelled":
                 train.setState(new CancelledState());
@@ -102,47 +110,14 @@ public class TrainService {
 
         Train savedTrain = trainRepository.save(train);
         
-        // Notify status update if status changed
+        // Notify status update if status changed using OOP handler pattern
         if (!previousStatus.equals(status)) {
-            notifyTrainStatusUpdate(savedTrain, previousStatus, status);
+            if (trainStatusNotificationHandler != null) {
+                trainStatusNotificationHandler.handleTrainStatusChange(savedTrain, previousStatus, status);
+            }
         }
 
         return savedTrain;
-    }
-
-    /**
-     * Notify all users about train delay
-     */
-    private void notifyTrainDelay(Train train) {
-        try {
-            String message = "Train " + train.getName() + " on route " + 
-                    (train.getRoute() != null ? train.getRoute().getName() : "Unknown") + 
-                    " is delayed.";
-            
-            // Notify all users (sending to observer list)
-            notificationService.notifyUsers(message);
-            
-            System.out.println("Notification: " + message);
-        } catch (Exception e) {
-            System.out.println("Error creating delay notification: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Notify all users about train status update
-     */
-    private void notifyTrainStatusUpdate(Train train, String previousStatus, String newStatus) {
-        try {
-            String message = "Train " + train.getName() + " status updated from " + 
-                    previousStatus + " to " + newStatus + ".";
-            
-            // Notify all users
-            notificationService.notifyUsers(message);
-            
-            System.out.println("Notification: " + message);
-        } catch (Exception e) {
-            System.out.println("Error creating status update notification: " + e.getMessage());
-        }
     }
 
     /**

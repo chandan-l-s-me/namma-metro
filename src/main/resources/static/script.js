@@ -1184,7 +1184,8 @@ function renderAdminTrains() {
         <h4>${escapeHtml(getTrainName(latestTrain))}</h4>
         <p>Route: ${escapeHtml(latestTrain.routeName || latestTrain.route?.name || "Unknown route")}</p>
         <p>From ${escapeHtml(latestTrain.sourceStation || "Unknown")} to ${escapeHtml(latestTrain.destinationStation || "Unknown")}</p>
-        <p>Schedule: ${escapeHtml(latestTrain.departureTime || "--")} to ${escapeHtml(latestTrain.arrivalTime || "--")} | Status: ${escapeHtml(latestTrain.status || "--")}</p>
+        <p>Schedule: ${escapeHtml(latestTrain.departureTime || "--")} to ${escapeHtml(latestTrain.arrivalTime || "--")} | Status: <strong>${escapeHtml(latestTrain.status || "--")}</strong></p>
+        <button class="btn-secondary btn-update-status" data-train-id="${latestTrain.id}" type="button">Update Status</button>
     `;
     summaryContainer.appendChild(summaryItem);
 
@@ -1195,9 +1196,18 @@ function renderAdminTrains() {
             <h4>${escapeHtml(getTrainName(train))}</h4>
             <p>Route: ${escapeHtml(train.routeName || train.route?.name || "Unknown route")} | Capacity: ${train.capacity ?? "--"}</p>
             <p>From ${escapeHtml(train.sourceStation || "Unknown")} to ${escapeHtml(train.destinationStation || "Unknown")}</p>
-            <p>Schedule: ${escapeHtml(train.departureTime || "--")} to ${escapeHtml(train.arrivalTime || "--")} | Status: ${escapeHtml(train.status || "--")}</p>
+            <p>Schedule: ${escapeHtml(train.departureTime || "--")} to ${escapeHtml(train.arrivalTime || "--")} | Status: <strong>${escapeHtml(train.status || "--")}</strong></p>
+            <button class="btn-secondary btn-update-status" data-train-id="${train.id}" type="button">Update Status</button>
         `;
         container.appendChild(item);
+    });
+
+    // Add event listeners for update status buttons
+    document.querySelectorAll(".btn-update-status").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const trainId = e.target.dataset.trainId;
+            showTrainStatusModal(trainId);
+        });
     });
 }
 
@@ -1222,6 +1232,95 @@ async function handleCreateTrain(event) {
         showNotification("Train created successfully.");
     } catch (error) {
         showNotification(error.message, "error");
+    }
+}
+
+function showTrainStatusModal(trainId) {
+    const train = state.trains.find((t) => t.id == trainId);
+    if (!train) {
+        showNotification("Train not found", "error");
+        return;
+    }
+
+    const statusOptions = ["Running", "Delayed", "Cancelled"];
+    
+    // Create modal dialog
+    const modalOverlay = document.createElement("div");
+    modalOverlay.className = "modal-overlay";
+    modalOverlay.id = "trainStatusModal";
+    
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+    
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "modal-close";
+    closeBtn.innerHTML = "&times;";
+    closeBtn.addEventListener("click", () => {
+        document.getElementById("trainStatusModal").remove();
+    });
+    
+    const title = document.createElement("h3");
+    title.textContent = `Update Status for ${escapeHtml(getTrainName(train))}`;
+    
+    const currentStatus = document.createElement("p");
+    currentStatus.style.marginBottom = "16px";
+    currentStatus.innerHTML = `<strong>Current Status:</strong> ${escapeHtml(train.status || "Unknown")}`;
+    
+    const statusButtonsContainer = document.createElement("div");
+    statusButtonsContainer.style.display = "flex";
+    statusButtonsContainer.style.gap = "8px";
+    statusButtonsContainer.style.marginBottom = "16px";
+    
+    statusOptions.forEach((status) => {
+        const btn = document.createElement("button");
+        btn.className = train.status === status ? "btn-primary" : "btn-secondary";
+        btn.textContent = status;
+        btn.style.flex = "1";
+        btn.addEventListener("click", async () => {
+            try {
+                await handleUpdateTrainStatus(trainId, status);
+                document.getElementById("trainStatusModal").remove();
+            } catch (error) {
+                showNotification(error.message, "error");
+            }
+        });
+        statusButtonsContainer.appendChild(btn);
+    });
+    
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "btn-secondary";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.style.width = "100%";
+    cancelBtn.addEventListener("click", () => {
+        document.getElementById("trainStatusModal").remove();
+    });
+    
+    modalContent.appendChild(closeBtn);
+    modalContent.appendChild(title);
+    modalContent.appendChild(currentStatus);
+    modalContent.appendChild(statusButtonsContainer);
+    modalContent.appendChild(cancelBtn);
+    
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
+}
+
+async function handleUpdateTrainStatus(trainId, newStatus) {
+    try {
+        ensureAdminSession();
+        
+        await apiRequest(`/api/trains/${trainId}/status`, {
+            method: "PUT",
+            body: {
+                status: newStatus
+            }
+        });
+        
+        await loadAdminTrainData();
+        showNotification(`Train status updated to "${newStatus}" successfully.`);
+    } catch (error) {
+        showNotification(error.message, "error");
+        throw error;
     }
 }
 

@@ -4,6 +4,7 @@ import com.nammametro.metro.dto.TrainResponse;
 import com.nammametro.metro.model.Train;
 import com.nammametro.metro.service.NotificationService;
 import com.nammametro.metro.service.TrainService;
+import com.nammametro.metro.notification.TrainStatusNotificationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,9 @@ public class TrainController {
 
     @Autowired
     private NotificationService notificationService;
+    
+    @Autowired
+    private TrainStatusNotificationHandler trainStatusNotificationHandler;
 
     private final TrainService trainService;
 
@@ -94,18 +98,16 @@ public class TrainController {
      * Update train status
      * PUT /api/trains/{id}/status
      * Request body: { "status": "Running" | "Delayed" | "Cancelled" }
+     * 
+     * Notifications are automatically sent to all users through the handler
      */
     @PutMapping("/{id}/status")
     public Train updateTrainStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> request) {
         String status = request.get("status");
-        Train train = trainService.updateTrainStatus(id, status);
-
-        // Notify through observer pattern
-        notifyUsers("Train status updated to " + status);
-
-        return train;
+        // TrainService now handles all notifications via TrainStatusNotificationHandler
+        return trainService.updateTrainStatus(id, status);
     }
 
     /**
