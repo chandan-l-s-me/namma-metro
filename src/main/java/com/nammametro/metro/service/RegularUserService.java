@@ -3,6 +3,7 @@ package com.nammametro.metro.service;
 import com.nammametro.metro.model.*;
 import com.nammametro.metro.repository.RegularUserRepository;
 import com.nammametro.metro.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,9 @@ public class RegularUserService {
 
     private final RegularUserRepository regularUserRepository;
     private final UserRepository userRepository;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     public RegularUserService(RegularUserRepository regularUserRepository,
                              UserRepository userRepository) {
@@ -44,7 +48,12 @@ public class RegularUserService {
         regularUser.setWalletBalance(0.0);
         regularUser.setLoyaltyPoints(0);
 
-        return regularUserRepository.save(regularUser);
+        RegularUser savedRegularUser = regularUserRepository.save(regularUser);
+        
+        // Notify user registration
+        notifyUserRegistration(savedRegularUser);
+        
+        return savedRegularUser;
     }
 
     /**
@@ -135,5 +144,28 @@ public class RegularUserService {
         RegularUser regularUser = regularUserRepository.findById(regularUserId)
                 .orElseThrow(() -> new RuntimeException("Regular user not found"));
         return regularUser.getWalletBalance();
+    }
+
+    /**
+     * Notify user registration
+     */
+    private void notifyUserRegistration(RegularUser regularUser) {
+        try {
+            if (regularUser != null && regularUser.getUser() != null) {
+                String message = "Welcome " + regularUser.getUser().getName() + 
+                        "! Your account has been successfully created. You can now book tickets.";
+                
+                notificationService.createNotification(
+                    "USER_REGISTRATION",
+                    "Registration Successful",
+                    message,
+                    regularUser.getUser().getId(),
+                    String.valueOf(regularUser.getId())
+                );
+            }
+            System.out.println("Notification: User registration successful");
+        } catch (Exception e) {
+            System.out.println("Error creating registration notification: " + e.getMessage());
+        }
     }
 }

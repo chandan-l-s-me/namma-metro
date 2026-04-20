@@ -5,6 +5,7 @@ import com.nammametro.metro.model.Train;
 import com.nammametro.metro.model.Route;
 import org.springframework.stereotype.Service;
 import com.nammametro.metro.model.state.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,9 @@ public class TrainService {
 
     private final TrainRepository trainRepository;
     private final RouteRepository routeRepository;
+    
+    @Autowired
+    private NotificationService notificationService;
 
     public TrainService(TrainRepository trainRepository, RouteRepository routeRepository) {
         this.trainRepository = trainRepository;
@@ -79,12 +83,15 @@ public class TrainService {
         Train train = trainRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Train not found"));
 
+        String previousStatus = train.getStatus();
+
         switch (status) {
             case "Running":
                 train.setState(new RunningState());
                 break;
             case "Delayed":
                 train.setState(new DelayedState());
+                notifyTrainDelay(train);
                 break;
             case "Cancelled":
                 train.setState(new CancelledState());
@@ -93,7 +100,49 @@ public class TrainService {
                 throw new IllegalArgumentException("Invalid status: " + status);
         }
 
-        return trainRepository.save(train);
+        Train savedTrain = trainRepository.save(train);
+        
+        // Notify status update if status changed
+        if (!previousStatus.equals(status)) {
+            notifyTrainStatusUpdate(savedTrain, previousStatus, status);
+        }
+
+        return savedTrain;
+    }
+
+    /**
+     * Notify all users about train delay
+     */
+    private void notifyTrainDelay(Train train) {
+        try {
+            String message = "Train " + train.getName() + " on route " + 
+                    (train.getRoute() != null ? train.getRoute().getName() : "Unknown") + 
+                    " is delayed.";
+            
+            // Notify all users (sending to observer list)
+            notificationService.notifyUsers(message);
+            
+            System.out.println("Notification: " + message);
+        } catch (Exception e) {
+            System.out.println("Error creating delay notification: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Notify all users about train status update
+     */
+    private void notifyTrainStatusUpdate(Train train, String previousStatus, String newStatus) {
+        try {
+            String message = "Train " + train.getName() + " status updated from " + 
+                    previousStatus + " to " + newStatus + ".";
+            
+            // Notify all users
+            notificationService.notifyUsers(message);
+            
+            System.out.println("Notification: " + message);
+        } catch (Exception e) {
+            System.out.println("Error creating status update notification: " + e.getMessage());
+        }
     }
 
     /**
